@@ -27,7 +27,7 @@ def all_participants_grater_than(months=6,when=['15-04-2024','15-04-2024','16-04
     for project_name in tokens.REDCAP_PROJECTS_ICARIA:
         print(project_name)
         project = redcap.Project(tokens.URL, tokens.REDCAP_PROJECTS_ICARIA[project_name])
-        df = project.export_records(format='df', fields=['child_dob'],events=['epipenta1_v0_recru_arm_1'])
+        df = project.export_records(format_type='df', fields=['child_dob'],events=['epipenta1_v0_recru_arm_1'])
         if project_name in params.district_HF['Bombali']:
             start_date = when[2]
             from_date = bombali_start_date
@@ -63,7 +63,7 @@ def rtss_counts():
     for project_name in tokens.REDCAP_PROJECTS_ICARIA:
         print(project_name)
         project = redcap.Project(tokens.URL, tokens.REDCAP_PROJECTS_ICARIA[project_name])
-        df = project.export_records(format='df',fields=['int_vacc_rtss1_date','int_vacc_rtss2_date','int_vacc_rtss3_date','int_vacc_rtss4_date'], events=params.rtss_events)
+        df = project.export_records(format_type='df',fields=['int_vacc_rtss1_date','int_vacc_rtss2_date','int_vacc_rtss3_date','int_vacc_rtss4_date'], events=params.rtss_events)
         if not df.empty:
             df = df.fillna(0).reset_index()
             for k,el in df[df['int_vacc_rtss1_date']!=0].T.items():
@@ -111,9 +111,9 @@ def rtss_counts():
                     first = l['record_id'].nunique()
                 elif k == '2':
                     second = l['record_id'].nunique()
-                elif k == '2':
+                elif k == '3':
                     third = l['record_id'].nunique()
-                elif k == '2':
+                elif k == '4':
                     four = l['record_id'].nunique()
             total = first + second + third + four
             total_all += total
