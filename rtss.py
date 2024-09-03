@@ -98,38 +98,38 @@ def rtss_counts():
     print(second_doses_records.difference(first_doses_records))
     print(errors_df)
 
-    with pd.ExcelWriter(tokens.hf_sheet,mode='a',if_sheet_exists='replace') as writer:
-        total_first = 0
-        total_second = 0
-        total_third = 0
-        total_four = 0
-        total_all = 0
-        for hf, el in all_vacc.groupby(['HF']):
-            first,second,third,four = 0,0,0,0
-            for k, l in el.groupby(['num_vaccine']):
-                if k == '1':
-                    first = l['record_id'].nunique()
-                elif k == '2':
-                    second = l['record_id'].nunique()
-                elif k == '3':
-                    third = l['record_id'].nunique()
-                elif k == '4':
-                    four = l['record_id'].nunique()
-            total = first + second + third + four
-            total_all += total
-            total_first += first
-            total_second += second
-            total_third += third
-            total_four += four
-            summary.loc[len(summary)] = hf, first, second, third, four, total
-            el.to_excel(writer, sheet_name=str(hf), index=False)
+#    with pd.ExcelWriter(tokens.hf_sheet,mode='a',if_sheet_exists='replace') as writer:
+    total_first = 0
+    total_second = 0
+    total_third = 0
+    total_four = 0
+    total_all = 0
+    for hf, el in all_vacc.groupby(['HF']):
+        first,second,third,four = 0,0,0,0
+        for k, l in el.groupby(['num_vaccine']):
+            if k == '1':
+                first = l['record_id'].nunique()
+            elif k == '2':
+                second = l['record_id'].nunique()
+            elif k == '3':
+                third = l['record_id'].nunique()
+            elif k == '4':
+                four = l['record_id'].nunique()
+        total = first + second + third + four
+        total_all += total
+        total_first += first
+        total_second += second
+        total_third += third
+        total_four += four
+        summary.loc[len(summary)] = hf, first, second, third, four, total
+#        el.to_excel(writer, sheet_name=str(hf), index=False)
 
-        summary.loc[len(summary)] = 'total', total_first, total_second, total_third, total_four, total_all
-        summary.loc[len(summary)] = 'Different ICARIA participants vaccinated with RTSS', '','','','',all_vacc['record_id'].nunique()
+    summary.loc[len(summary)] = 'total', total_first, total_second, total_third, total_four, total_all
+    summary.loc[len(summary)] = 'Different ICARIA participants vaccinated with RTSS', '','','','',all_vacc['record_id'].nunique()
 
-        print(summary)
+    print(summary)
 
-    summary.to_excel(tokens.summary_sheet,sheet_name='ICARIA_rtss',index=False)
+#    summary.to_excel(tokens.summary_sheet,sheet_name='ICARIA_rtss',index=False)
 
     file_to_drive(summary,params.summary_drive_filename,
                   params.summary_drive_worksheet_name,tokens.rtss_drive_folder,
