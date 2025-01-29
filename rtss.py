@@ -63,33 +63,36 @@ def rtss_counts():
     for project_name in tokens.REDCAP_PROJECTS_ICARIA:
         print(project_name)
         project = redcap.Project(tokens.URL, tokens.REDCAP_PROJECTS_ICARIA[project_name])
-        df = project.export_records(format_type='df',fields=['int_vacc_rtss1_date','int_vacc_rtss2_date','int_vacc_rtss3_date','int_vacc_rtss4_date'], events=params.rtss_events)
+        df = project.export_records(format_type='df',fields=['rtss_vacc_rtss1_date','rtss_vacc_rtss2_date','rtss_vacc_rtss3_date','rtss_vacc_rtss4_date'], event_name=params.rtss_events)
+        print(df)
         if not df.empty:
             df = df.fillna(0).reset_index()
-            for k,el in df[df['int_vacc_rtss1_date']!=0].T.items():
+            print(df[df['rtss_vacc_rtss4_date']!=0])
+            for k,el in df[df['rtss_vacc_rtss1_date']!=0].T.items():
                 if not all_vacc[(all_vacc['record_id'] == el['record_id']) & (all_vacc['num_vaccine'] == '1')].empty:
                     print("ERROR CASE 1: " + str(el['record_id']))
                     errors_df.loc[(len(errors_df))] = project_name.split(".")[0], el['record_id'], '1'
                 else:
-                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0], el['record_id'],el['redcap_event_name'], el['int_vacc_rtss1_date'],'1'
-            for k,el in df[df['int_vacc_rtss2_date']!=0].T.items():
+                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0], el['record_id'],el['redcap_event_name'], el['rtss_vacc_rtss1_date'],'1'
+            for k,el in df[df['rtss_vacc_rtss2_date']!=0].T.items():
                 if not all_vacc[(all_vacc['record_id']==el['record_id']) & (all_vacc['num_vaccine']=='2')].empty:
                     print("ERROR CASE 2: "+str(el['record_id']))
                     errors_df.loc[(len(errors_df))] = project_name.split(".")[0], el['record_id'], '2'
                 else:
-                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0],el['record_id'],el['redcap_event_name'], el['int_vacc_rtss2_date'],'2'
-            for k,el in df[df['int_vacc_rtss3_date']!=0].T.items():
+                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0],el['record_id'],el['redcap_event_name'], el['rtss_vacc_rtss2_date'],'2'
+            for k,el in df[df['rtss_vacc_rtss3_date']!=0].T.items():
                 if not all_vacc[(all_vacc['record_id'] == el['record_id']) & (all_vacc['num_vaccine'] == '3')].empty:
                     print("ERROR CASE 3: " + str(el['record_id']))
                     errors_df.loc[(len(errors_df))] = project_name.split(".")[0], el['record_id'], '3'
                 else:
-                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0],el['record_id'],el['redcap_event_name'], el['int_vacc_rtss3_date'],'3'
-            for k,el in df[df['int_vacc_rtss4_date']!=0].T.items():
+                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0],el['record_id'],el['redcap_event_name'], el['rtss_vacc_rtss3_date'],'3'
+            for k,el in df[df['rtss_vacc_rtss4_date']!=0].T.items():
+
                 if not all_vacc[(all_vacc['record_id'] == el['record_id']) & (all_vacc['num_vaccine'] == '4')].empty:
                     print("ERROR CASE 4: " + str(el['record_id']))
                     errors_df.loc[(len(errors_df))] = project_name.split(".")[0], el['record_id'], '4'
                 else:
-                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0],el['record_id'],el['redcap_event_name'], el['int_vacc_rtss4_date'],'4'
+                    all_vacc.loc[len(all_vacc)] = str(project_name).split(".")[0],el['record_id'],el['redcap_event_name'], el['rtss_vacc_rtss4_date'],'4'
 
 
     all_vacc_ind = all_vacc.set_index('record_id')
@@ -127,13 +130,11 @@ def rtss_counts():
     summary.loc[len(summary)] = 'total', total_first, total_second, total_third, total_four, total_all
     summary.loc[len(summary)] = 'Different ICARIA participants vaccinated with RTSS', '','','','',all_vacc['record_id'].nunique()
 
-    print(summary)
+    print(summary.T)
 
-#    summary.to_excel(tokens.summary_sheet,sheet_name='ICARIA_rtss',index=False)
+    summary.to_excel(tokens.summary_sheet,sheet_name='ICARIA_rtss',index=False)
 
-    file_to_drive(summary,params.summary_drive_filename,
-                  params.summary_drive_worksheet_name,tokens.rtss_drive_folder,
-                  index_included=False, deleting=True)
+    file_to_drive(summary,params.summary_drive_filename,params.summary_drive_worksheet_name,tokens.rtss_drive_folder,index_included=False, deleting=True)
 
     print("\n\nScript Completed on "+ str(datetime.today()))
 
@@ -145,5 +146,7 @@ def file_to_drive(df,drive_file_name,worksheet,folder_id,index_included=True,del
     if deleting:
         actual_worksheet = sh.worksheet(worksheet)
         actual_worksheet.clear()
+    print('almost done')
     set_with_dataframe(sh.worksheet(worksheet), df,include_index=index_included)
 
+    print('done')

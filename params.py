@@ -8,9 +8,7 @@ district_HF = {
 }
 
 rtss_events = [
-    'epivita_v3_iptisp3_arm_1','epirtss_m7_visit_arm_1','epirtss_m8_visit_arm_1',
-    'epimvr1_v4_iptisp4_arm_1','epivita_v5_iptisp5_arm_1','epimvr2_v6_iptisp6_arm_1',
-    'hhat_18th_month_of_arm_1']
+    'rtss_arm_1']
 
 
 dict_prefixes = {
