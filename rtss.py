@@ -98,7 +98,7 @@ def rtss_counts():
     all_vacc_ind = all_vacc.set_index('record_id')
     first_doses_records = all_vacc_ind[all_vacc_ind['num_vaccine']=='1'].index
     second_doses_records = all_vacc_ind[all_vacc_ind['num_vaccine']=='2'].index
-    print(second_doses_records.difference(first_doses_records))
+    #print(second_doses_records.difference(first_doses_records))
     print(errors_df)
 
 #    with pd.ExcelWriter(tokens.hf_sheet,mode='a',if_sheet_exists='replace') as writer:
@@ -130,9 +130,8 @@ def rtss_counts():
     summary.loc[len(summary)] = 'total', total_first, total_second, total_third, total_four, total_all
     summary.loc[len(summary)] = 'Different ICARIA participants vaccinated with RTSS', '','','','',all_vacc['record_id'].nunique()
 
-    print(summary.T)
 
-    summary.to_excel(tokens.summary_sheet,sheet_name='ICARIA_rtss',index=False)
+    #summary.to_excel(tokens.summary_sheet,sheet_name='ICARIA_rtss',index=False)
 
     file_to_drive(summary,params.summary_drive_filename,params.summary_drive_worksheet_name,tokens.rtss_drive_folder,index_included=False, deleting=True)
 
@@ -146,7 +145,4 @@ def file_to_drive(df,drive_file_name,worksheet,folder_id,index_included=True,del
     if deleting:
         actual_worksheet = sh.worksheet(worksheet)
         actual_worksheet.clear()
-    print('almost done')
     set_with_dataframe(sh.worksheet(worksheet), df,include_index=index_included)
-
-    print('done')
