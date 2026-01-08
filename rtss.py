@@ -60,6 +60,57 @@ def all_participants_grater_than(months=6,when=['15-04-2024','15-04-2024','16-04
     print("Port Loko: "+ str(len(portloko_number)))
     print(dict_ages)
 
+
+def rtss_migration_from_intervention_to_event():
+    """
+    This function prepares a file to migrate all RTSS data from intervention to
+    a specific RTSS repetitive event separeted from the rest of the intervention.
+
+    Initially, RTSS was intented to be collected inside the intervention form.
+    After 2 weeks of use, it was adviced to switch to a REDCap repetitive event
+    sistem and already collected data must be migrated to the new event.
+
+    :return: csv file with all fields needed to be automatically upload into REDCap
+    """
+    for project_key in tokens.REDCAP_PROJECTS:
+        print(project_key)
+        csv_to_import = pd.DataFrame(columns=params.rtss_fields_to_import)
+        project = redcap.Project(tokens.URL, tokens.REDCAP_PROJECTS[project_key])
+
+        # Get all SAE records marked as completed (sae_complete = '2')
+        print("[{}] Getting SAE records from {}...".format(datetime.now(), project_key))
+        df = project.export_records(format='df', fields=params.RTSS_FIELDS)
+        dfres = df.reset_index()
+        print(dfres.columns)
+        for k, el in dfres[(dfres['int_vacc_rtss1'] == 1)].T.items():
+            if 'rtss' in str(el['int_comments']):
+                print(el['int_comments'])
+                comment = el['int_comments']
+            else:
+                comment = ''
+            csv_to_import.loc[len(csv_to_import)] = el.record_id,'rtss_arm_1','rtss','1','SOP_RC_001_A04_v02_EN.20211202','5',int(el['int_vacc_rtss1']),el['int_vacc_rtss1_date'],'0','','0','','0','','',el['int_interviewer_id'],el['int_date'],comment,el['int_time'],'2'
+
+        for k, el in dfres[(dfres['int_vacc_rtss2']==1)].T.items():
+            if 'rtss' in str(el['int_comments']):
+                print(el['int_comments'])
+                comment = el['int_comments']
+            else:
+                comment = ''
+            csv_to_import.loc[len(csv_to_import)] = el.record_id,'rtss_arm_1','rtss','2','SOP_RC_001_A04_v02_EN.20211202','5','0','',int(el['int_vacc_rtss2']),el['int_vacc_rtss2_date'],'0','','0','','',el['int_interviewer_id'],el['int_date'],comment,el['int_time'],'2'
+
+        for k, el in dfres[(dfres['int_vacc_rtss3']==1)].T.items():
+            if 'rtss' in str(el['int_comments']):
+                print(el['int_comments'])
+                comment = el['int_comments']
+            else:
+                comment = ''
+            csv_to_import.loc[len(csv_to_import)] = el.record_id,'rtss_arm_1','rtss','3','SOP_RC_001_A04_v02_EN.20211202','5','0','','0','',int(el['int_vacc_rtss3']),el['int_vacc_rtss3_date'],'0','','',el['int_interviewer_id'],el['int_date'],comment,el['int_time'],'2'
+
+        csv_to_import = csv_to_import.drop_duplicates().sort_values(['record_id','redcap_repeat_instance'])
+        if not csv_to_import.empty:
+            csv_to_import.to_csv(tokens.script_path+project_key+'.csv',index=False)
+
+
 def rtss_counts():
     """
     This script check the number of doses and the number of ICARIA participants

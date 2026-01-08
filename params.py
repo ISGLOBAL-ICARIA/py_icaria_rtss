@@ -10,3 +10,16 @@ district_HF = {
                 'HF15','HF16.01','HF16.02','HF16.03','HF16.04','HF16.05',
                 'HF17.01','HF17.02']
 }
+
+RTSS_FIELDS = ['int_vacc_rtss1','int_vacc_rtss1_date','int_vacc_rtss2_date',
+               'int_vacc_rtss2','int_vacc_rtss3','int_vacc_rtss3_date',
+               'int_vacc_rtss4','int_vacc_rtss4_date','int_interviewer_id',
+               'int_date','int_comments','int_time','int_duration']
+
+rtss_fields_to_import = [
+    'record_id','redcap_event_name','redcap_repeat_instrument',
+    'redcap_repeat_instance','ver_sop_rtss','ver_dci_rtss','rtss_vacc_rtss1',
+    'rtss_vacc_rtss1_date','rtss_vacc_rtss2','rtss_vacc_rtss2_date',
+    'rtss_vacc_rtss3','rtss_vacc_rtss3_date','rtss_vacc_rtss4',
+    'rtss_vacc_rtss4_date','rtss_why_warnings','rtss_interviewer_id','rtss_date',
+    'rtss_comments','rtss_time','rtss_complete']

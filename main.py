@@ -24,6 +24,9 @@ if __name__ == '__main__':
     """ ESTIMATION OF CHILD'S AFFECTED BY RTSS """
 #    rtss.all_participants_grater_than()
 
+    """ MIGRATION OF RTSS DATA FROM INT TO SEPARATED REPETITIVE EVENT"""
+#    rtss.rtss_migration_from_intervention_to_event()
+
     """ NUMBER OF PARTICIPANTS VACCINATED BY RTSS AND SUMMARY TOOL GENERATOR """
     rtss.rtss_counts()
 
